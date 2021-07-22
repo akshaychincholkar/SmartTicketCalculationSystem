@@ -21,7 +21,7 @@ public class TicketConstants {
 
     public final static String ZONE_2_1_WEEKDAY_OFF_PEAK_HOUR_START_TIME="17:00";
     public final static String ZONE_2_1_WEEKDAY_OFF_PEAK_HOUR_END_TIME="20:00";
-    public final static String ZONE_2_1_WEEKDEND_OFF_PEAK_HOUR_START_TIME="18:00";
+    public final static String ZONE_2_1_WEEKEND_OFF_PEAK_HOUR_START_TIME="18:00";
     public final static String ZONE_2_1_WEEKEND_OFF_PEAK_HOUR_END_TIME="22:00";
 
     public final static String ZONE_1 = "1";
