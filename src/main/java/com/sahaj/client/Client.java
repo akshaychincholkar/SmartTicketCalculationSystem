@@ -91,7 +91,7 @@ public class Client {
                 String destination = arr[3];
                 System.out.println(line);
                 if(firsday.equalsIgnoreCase(day)&&firsday!=""){
-                    resetState(prevPath,true);
+                    resetState(prevPath,true,day);
                     isFirstday=true;
                 }
                 if(isFirstday){
@@ -101,6 +101,14 @@ public class Client {
                     isFirstday=false;
                 }
                 int cost = calculateFare(day,time,source,destination,scanner.hasNextLine(),prevPath,prevDay);
+
+                if(prevDay.equalsIgnoreCase(TicketConstants.SUNDAY)&&day.equalsIgnoreCase(TicketConstants.MONDAY)){
+                    resetState(prevPath,true,day);
+                    System.out.println("Weekly Cap:"+weeklyCap+" \nMaximum weekly cap applicable::"+max.weeklyCap);
+                    System.out.println("**********************************************************************");
+                }else{
+                    System.out.println("Weekly Cap:"+weeklyCap+" \nMaximum weekly cap applicable::"+max.weeklyCap);
+                }
                 if(cost!=-1)                System.out.println("----------------------------------");
                 else {
                     System.out.println("Execution aborted...");
@@ -108,11 +116,7 @@ public class Client {
                 }
                 prevPath=destination;
                 prevDay=day;
-                System.out.println("Weekly Cap:"+weeklyCap+" max weekly cap:"+max.weeklyCap);
-                if(day.equalsIgnoreCase(TicketConstants.SUNDAY)){
-                    resetState(prevPath,true);
-                    System.out.println("**********************************************************************");
-                }
+
             }
             scanner.close();
 //            br.close();
@@ -125,7 +129,7 @@ public class Client {
     }
     public static int calculateFare(String day, String time, String source, String destination,
                                     boolean isNextPresent,String prevPath,String prevDay){
-        if(!prevDay.equalsIgnoreCase(day))prevPath=resetState(prevPath,false);
+        if(!prevDay.equalsIgnoreCase(day))prevPath=resetState(prevPath,false,day);
         int fare = 0;
         System.out.print("Day: "+day+" Source: "+source+" Destination:"+destination+" Travel time:"+time+" ");
         int currentDailyCap = getDailyCap(prevPath,source,destination);
@@ -137,11 +141,11 @@ public class Client {
             /*if (weeklyCap > weeklyCaps.get(source + "-" + destination)) {
                 if(weeklyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                     fare=max.dailyCap+fare-dailyCap;if(fare<0)fare=0;
-                    System.out.println("Daily dailyCap reached limit:"+max.dailyCap+" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Daily cap reached limit:"+max.dailyCap+" Fare reduced and applicable is Rs. "+fare);
                     dailyCap=max.dailyCap;
                     isDailyCapReached = true;
                 }
-                System.out.println("Daily dailyCap:"+dailyCap);
+                System.out.println("Daily cap:"+dailyCap);
             }*/
         }else{
             System.out.println("invalid path chosen#####");
@@ -163,19 +167,19 @@ public class Client {
                 dailyCap+=fare;
                 if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                     fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                    System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                     dailyCap=max.dailyCap;
                     isDailyCapReached = true;
                 }
 //                weeklyCap+=fare;
 
-                System.out.println("Daily dailyCap:"+dailyCap);
+                System.out.println("Daily cap:"+dailyCap);
                 /*if(!isNextPresent)weeklyCap+=dailyCap;*/
                 weeklyCap+=fare;
                 if(weeklyCap>max.weeklyCap){
                     fare=max.weeklyCap+fare-weeklyCap;
                     if(fare<0)fare=0;
-                    System.out.println("Daily weeklycap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Weekly cap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
                     weeklyCap=max.weeklyCap;
                 }
                 return fare;
@@ -189,31 +193,31 @@ public class Client {
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else{
                         System.out.println("Invalid source / destination");
                         /*if(!isNextPresent)weeklyCap+=dailyCap;*/weeklyCap+=fare;return fare;
@@ -226,27 +230,27 @@ public class Client {
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
@@ -261,7 +265,7 @@ public class Client {
                 /*if(!isNextPresent)weeklyCap+=dailyCap;*/weeklyCap+=fare;if(weeklyCap>max.weeklyCap){
                     fare=max.weeklyCap+fare-weeklyCap;
                     if(fare<0)fare=0;
-                    System.out.println("Daily weeklycap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Weekly cap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
                     weeklyCap=max.weeklyCap;
                 }
                 return fare;
@@ -282,19 +286,19 @@ public class Client {
                 dailyCap+=fare;
                 if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                     fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                    System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                     dailyCap=max.dailyCap;
                     isDailyCapReached = true;
                 }
 //                weeklyCap+=fare;
 
-                System.out.println("Daily dailyCap:"+dailyCap);
+                System.out.println("Daily cap:"+dailyCap);
                 /*if(!isNextPresent)weeklyCap+=dailyCap;*/
                 weeklyCap+=fare;
                 if(weeklyCap>max.weeklyCap){
                     fare=max.weeklyCap+fare-weeklyCap;
                     if(fare<0)fare=0;
-                    System.out.println("Daily weeklycap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Weekly cap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
                     weeklyCap=max.weeklyCap;
                 }
                 return fare;
@@ -308,31 +312,31 @@ public class Client {
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else{
                         System.out.println("Invalid source / destination");
                         /*if(!isNextPresent)weeklyCap+=dailyCap;*/weeklyCap+=fare;return fare;
@@ -345,27 +349,27 @@ public class Client {
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
-                        System.out.println("Daily dailyCap:"+dailyCap);
+                        System.out.println("Daily cap:"+dailyCap);
                     }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                             fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
-                            System.out.println("Daily dailyCap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
+                            System.out.println("Daily cap reached limit:"+max.dailyCap +" Fare reduced and applicable is Rs. "+fare);
                             dailyCap=max.dailyCap;
                             isDailyCapReached = true;
                         }
@@ -380,7 +384,7 @@ public class Client {
                 /*if(!isNextPresent)weeklyCap+=dailyCap;*/weeklyCap+=fare;if(weeklyCap>max.weeklyCap){
                     fare=max.weeklyCap+fare-weeklyCap;
                     if(fare<0)fare=0;
-                    System.out.println("Daily weeklycap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
+                    System.out.println("Weekly cap reached limit:"+max.weeklyCap +" Fare reduced and applicable is Rs. "+fare);
                     weeklyCap=max.weeklyCap;
                 }
                 return fare;
@@ -388,7 +392,7 @@ public class Client {
         }
     }
 
-    private static String resetState(String prevPath,boolean isWeekCompleted) {
+    private static String resetState(String prevPath,boolean isWeekCompleted,String day) {
         /*while(!head.getRoute().equalsIgnoreCase(path)){
             head=head.getNext();
         }
@@ -398,7 +402,15 @@ public class Client {
         max.dailyCap =0;
         prevPath="";
 
-        if(isWeekCompleted)weeklyCap=0;
+        if(isWeekCompleted){
+            weeklyCap=0;
+            max = new PathList();
+        }
+        else{
+            while (!head.day.equalsIgnoreCase(day)){
+                head=head.next;
+            }
+        }
         return prevPath;
     }
     private static int getWeeklyCap(String source,String destination){return weeklyCaps.get(source+"-"+destination);}
