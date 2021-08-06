@@ -7,8 +7,9 @@ public class InputBean {
     private String source;
     private String destination;
     private boolean isNextPresent;
-    private String prevPath;
-    private String prevDay;
+    //TODO: previous day null initialization
+    private String prevPath = "";
+    private String prevDay = "";
 
     public String getDay() {
         return day;
@@ -65,4 +66,5 @@ public class InputBean {
     public void setPrevDay(String prevDay) {
         this.prevDay = prevDay;
     }
+
 }
