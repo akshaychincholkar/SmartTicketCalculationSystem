@@ -32,12 +32,6 @@ public class TicketConstants {
     public final static String ROUTE_2_2="2-2";
     public final static String ROUTE_2_1="2-1";
 
-    public final static int ZONE_1_1_PEAK_HOUR_FAIR = 30;
-    public final static int ZONE_1_1_OFF_PEAK_HOUR_FAIR = 25;
-    public final static int INTERZONAL_PEAK_HOUR_FAIR = 35;
-    public final static int INERZONAL_PEAK_HOUR_FAIR = 30;
-    public final static int ZONE_2_2_PEAK_HOUR_FAIR = 25;
-    public final static int ZONE_2_2_OFF_PEAK_HOUR_FAIR = 20;
 
     public final static int ZONE_1_1_DAILY_CAP = 100;
     public final static int ZONE_1_1_WEEKLY_CAP = 500;

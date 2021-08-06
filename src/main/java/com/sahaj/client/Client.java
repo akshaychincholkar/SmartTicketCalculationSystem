@@ -2,6 +2,7 @@ package com.sahaj.client;
 
 import com.sahaj.constants.TicketConstants;
 import com.sahaj.entities.CurrentDay;
+import com.sahaj.model.InputBean;
 import com.sahaj.entities.PathList;
 
 import java.io.*;
@@ -12,6 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * TODO: Interface:
+ * weekday and weekend to implement
+ */
+
+/**
+ * TODO: TDD addition
+ */
 public class Client {
     static int dailyCap = 0;
     static int weeklyCap = 0;
@@ -100,9 +109,17 @@ public class Client {
                     }
                     isFirstday=false;
                 }
-                int cost = calculateFare(day,time,source,destination,scanner.hasNextLine(),prevPath,prevDay);
+                InputBean inputBean = new InputBean();
+                inputBean.setDay(day);
+                inputBean.setTime(time);
+                inputBean.setSource(source);
+                inputBean.setDestination(destination);
+                inputBean.setPrevPath(prevPath);
+                inputBean.setPrevDay(prevDay);
 
-                if(prevDay.equalsIgnoreCase(TicketConstants.SUNDAY)&&day.equalsIgnoreCase(TicketConstants.MONDAY)){
+                int cost = calculateFare(inputBean);
+
+                if(inputBean.getPrevDay().equalsIgnoreCase(TicketConstants.SUNDAY)&&day.equalsIgnoreCase(TicketConstants.MONDAY)){
                     resetState(prevPath,true,day);
                     System.out.println("Weekly Cap:"+weeklyCap+" \nMaximum weekly cap applicable::"+max.weeklyCap);
                     System.out.println("**********************************************************************");
@@ -127,18 +144,31 @@ public class Client {
 
 
     }
-    public static int calculateFare(String day, String time, String source, String destination,
-                                    boolean isNextPresent,String prevPath,String prevDay){
-        if(!prevDay.equalsIgnoreCase(day))prevPath=resetState(prevPath,false,day);
+
+    /**
+     * TODO: TDD creation
+     * Create the test case class:
+     * Create failfast: write the fail test first
+     * Combinations of input
+     * XP : Extended programming
+     * mock the methods: using constructor : parametrised and non-parametrised
+     * @return
+     */
+//    public static int calculateFare(String day, 
+// String time, String source, 
+// String destination,String prevPath,String inputBean.getPrevDay()){ ///TODO: Create pojo
+    public static int calculateFare(InputBean inputBean){
+        if(!inputBean.getPrevDay().equalsIgnoreCase(inputBean.getDay()))
+            inputBean.setPrevPath(resetState(inputBean.getPrevPath(),false, inputBean.getDay()));
         int fare = 0;
-        System.out.print("Day: "+day+" Source: "+source+" Destination:"+destination+" Travel time:"+time+" ");
-        int currentDailyCap = getDailyCap(prevPath,source,destination);
-        int currentWeeklyCap = getWeeklyCap(source,destination);
+        System.out.print("Day: "+ inputBean.getDay()+" Source: "+ inputBean.getSource()+" Destination:"+ inputBean.getDestination()+" Travel time:"+ inputBean.getTime()+" ");
+        int currentDailyCap = getDailyCap(inputBean.getPrevPath(), inputBean.getSource(), inputBean.getDestination());
+        int currentWeeklyCap = getWeeklyCap(inputBean.getSource(), inputBean.getDestination());
         if(max.weeklyCap<currentWeeklyCap)max.weeklyCap=currentWeeklyCap;
         if(currentDailyCap!=-1){
             if(max.dailyCap <currentDailyCap)max.dailyCap =currentDailyCap;
             //code to handle weekly dailyCap
-            /*if (weeklyCap > weeklyCaps.get(source + "-" + destination)) {
+            /*if (weeklyCap > weeklyCaps.get(inputBean.getSource() + "-" + inputBean.getDestination())) {
                 if(weeklyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                     fare=max.dailyCap+fare-dailyCap;if(fare<0)fare=0;
                     System.out.println("Daily cap reached limit:"+max.dailyCap+" Fare reduced and applicable is Rs. "+fare);
@@ -151,19 +181,34 @@ public class Client {
             System.out.println("invalid path chosen#####");
             return -1;
         }
-        if(!isWeekend(day)){
+        if(!isWeekend(inputBean.getDay())){
             //incoming to zone 1
-            if(!source.equalsIgnoreCase(TicketConstants.ZONE_1)
-                    && destination.equalsIgnoreCase(TicketConstants.ZONE_1)){
+            if(!inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1)
+                    && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_1)){
                 //is Peak hour
-                if(!isPeakHour(TicketConstants.ZONE_2_1_WEEKDAY_OFF_PEAK_HOUR_START_TIME,TicketConstants.ZONE_2_1_WEEKDAY_OFF_PEAK_HOUR_END_TIME,time)){
-                    System.out.println("Source zone: "+source+" Destination zone:"+destination+" Travel time:"+time+"Fare Category: Peak weekday");
+                /**
+                 * TODO: Calculate it from POJO
+                 */
+                /**
+                 * TODO: Check solid principles
+                 */
+                /**
+                 * TODO: remove negation from if condition
+                 */
+                if(!isPeakHour(TicketConstants.ZONE_2_1_WEEKDAY_OFF_PEAK_HOUR_START_TIME,TicketConstants.ZONE_2_1_WEEKDAY_OFF_PEAK_HOUR_END_TIME, inputBean.getTime())){
+                    /**
+                     * TODO: No sysouts
+                     */
+                    System.out.println("Source zone: "+ inputBean.getSource()+" Destination zone:"+ inputBean.getDestination()+" Travel time:"+ inputBean.getTime()+"Fare Category: Peak weekday");
                     fare=TicketConstants.PEAK_HOUR_FARE_1_2;
                 }else{
                     System.out.println("Fare Category: Non Peak weekday");
                     fare=TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
                 }
-
+                /**
+                 * TODO: call from signature for daily cap and weekly cap
+                 *
+                 */
                 dailyCap+=fare;
                 if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
                     fare=max.dailyCap +fare-dailyCap;if(fare<0)fare=0;
@@ -185,10 +230,10 @@ public class Client {
                 return fare;
             }else{
                 //Non incoming to zone 1
-                if(isPeakHour(TicketConstants.WEEKDAY_PEAK_HOUR_MORNING_START_TIME,TicketConstants.WEEKDAY_PEAK_HOUR_MORNING_END_TIME,time)||
-                        isPeakHour(TicketConstants.WEEKDAY_PEAK_HOUR_EVENING_START_TIME,TicketConstants.WEEKDAY_PEAK_HOUR_EVENING_END_TIME,time)){
+                if(isPeakHour(TicketConstants.WEEKDAY_PEAK_HOUR_MORNING_START_TIME,TicketConstants.WEEKDAY_PEAK_HOUR_MORNING_END_TIME, inputBean.getTime())||
+                        isPeakHour(TicketConstants.WEEKDAY_PEAK_HOUR_EVENING_START_TIME,TicketConstants.WEEKDAY_PEAK_HOUR_EVENING_END_TIME, inputBean.getTime())){
                     System.out.println("Fare Category: Peak weekday");
-                    if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_1)){
+                    if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_1)){
                         fare = TicketConstants.PEAK_HOUR_FARE_1_1;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -198,7 +243,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_2) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -208,7 +253,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -225,7 +270,7 @@ public class Client {
                 }else {
                     System.out.println("Fare Category: Non Peak weekday");
 //                    fare=TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
-                    if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_1)){
+                    if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_1)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_1_1;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -235,7 +280,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_2) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -245,7 +290,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -272,11 +317,11 @@ public class Client {
             }
         }else{
             //incoming to zone 1
-            if(!source.equalsIgnoreCase(TicketConstants.ZONE_1)
-                    && destination.equalsIgnoreCase(TicketConstants.ZONE_1)){
+            if(!inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1)
+                    && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_1)){
                 //is Peak hour
-                if(!isPeakHour(TicketConstants.ZONE_2_1_WEEKEND_OFF_PEAK_HOUR_START_TIME,TicketConstants.ZONE_2_1_WEEKEND_OFF_PEAK_HOUR_END_TIME,time)){
-                    System.out.println("Source zone: "+source+" Destination zone:"+destination+" Travel time:"+time+"Fare Category: Peak WEEKEND");
+                if(!isPeakHour(TicketConstants.ZONE_2_1_WEEKEND_OFF_PEAK_HOUR_START_TIME,TicketConstants.ZONE_2_1_WEEKEND_OFF_PEAK_HOUR_END_TIME, inputBean.getTime())){
+                    System.out.println("Source zone: "+ inputBean.getSource()+" Destination zone:"+ inputBean.getDestination()+" Travel time:"+ inputBean.getTime()+"Fare Category: Peak WEEKEND");
                     fare=TicketConstants.PEAK_HOUR_FARE_1_2;
                 }else{
                     System.out.println("Fare Category: Non Peak WEEKEND");
@@ -304,10 +349,10 @@ public class Client {
                 return fare;
             }else{
                 //Non incoming to zone 1
-                if(isPeakHour(TicketConstants.WEEKEND_PEAK_HOUR_MORNING_START_TIME,TicketConstants.WEEKEND_PEAK_HOUR_MORNING_END_TIME,time)||
-                        isPeakHour(TicketConstants.WEEKEND_PEAK_HOUR_EVENING_START_TIME,TicketConstants.WEEKEND_PEAK_HOUR_EVENING_END_TIME,time)){
+                if(isPeakHour(TicketConstants.WEEKEND_PEAK_HOUR_MORNING_START_TIME,TicketConstants.WEEKEND_PEAK_HOUR_MORNING_END_TIME, inputBean.getTime())||
+                        isPeakHour(TicketConstants.WEEKEND_PEAK_HOUR_EVENING_START_TIME,TicketConstants.WEEKEND_PEAK_HOUR_EVENING_END_TIME, inputBean.getTime())){
                     System.out.println("Fare Category: Peak WEEKEND");
-                    if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_1)){
+                    if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_1)){
                         fare = TicketConstants.PEAK_HOUR_FARE_1_1;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -317,7 +362,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_2) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -327,7 +372,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -344,7 +389,7 @@ public class Client {
                 }else {
                     System.out.println("Fare Category: Non Peak WEEKEND");
 //                    fare=TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
-                    if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_1)){
+                    if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_1)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_1_1;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_1_1_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -354,7 +399,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_2) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_2) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_2_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.ZONE_2_2_DAILY_CAP&&dailyCap>max.dailyCap){
@@ -364,7 +409,7 @@ public class Client {
                             isDailyCapReached = true;
                         }
                         System.out.println("Daily cap:"+dailyCap);
-                    }else if(source.equalsIgnoreCase(TicketConstants.ZONE_1) && destination.equalsIgnoreCase(TicketConstants.ZONE_2)){
+                    }else if(inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1) && inputBean.getDestination().equalsIgnoreCase(TicketConstants.ZONE_2)){
                         fare = TicketConstants.OFF_PEAK_HOUR_FARE_1_2;
                         dailyCap+=fare;
                         if(dailyCap>=TicketConstants.INTERZONAL_DAILY_CAP&&dailyCap>max.dailyCap){
