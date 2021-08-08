@@ -46,4 +46,18 @@ public class TicketConstants {
     public final static int OFF_PEAK_HOUR_FARE_1_1 = 25;
     public final static int OFF_PEAK_HOUR_FARE_1_2 = 30;
     public final static int OFF_PEAK_HOUR_FARE_2_2 = 20;
+
+    public final static String MORNING_START_TIME = "_MORNING_START_TIME";
+    public final static String MORNING_END_TIME = "_MORNING_END_TIME";
+    public final static String EVENING_START_TIME = "_EVENING_START_TIME";
+    public final static String EVENING_END_TIME = "_EVENING_END_TIME";
+
+    public final static String PEAK = "PEAK";
+    public final static String NON_PEAK = "NON_PEAK";
+    public final static String WEEKDAY = "WEEKDAY";
+    public final static String WEEKEND = "WEEKEND";
+    public final static String OFF_PEAK_HOUR_START_TIME = "_OFF_PEAK_HOUR_START_TIME";
+    public final static String OFF_PEAK_HOUR_END_TIME = "_OFF_PEAK_HOUR_END_TIME";
+
+
 }
