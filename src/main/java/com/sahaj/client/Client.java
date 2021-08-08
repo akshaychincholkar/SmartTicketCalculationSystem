@@ -4,6 +4,7 @@ import com.sahaj.constants.TicketConstants;
 import com.sahaj.entities.CurrentDay;
 import com.sahaj.model.InputBean;
 import com.sahaj.entities.PathList;
+import com.sahaj.model.InputBean2;
 
 import java.io.*;
 import java.text.ParseException;
@@ -99,7 +100,11 @@ public class Client {
                     }
                     isFirstday=false;
                 }
-                InputBean inputBean = new InputBean();
+                if(!prevDay.equalsIgnoreCase(TicketConstants.MONDAY)&&day.equalsIgnoreCase(TicketConstants.MONDAY)){
+                    weeklyCap=0;
+                    System.out.println("**********************************************************************");
+                }
+                InputBean2 inputBean = new InputBean2();
                 inputBean.setDay(day);
                 inputBean.setTime(time);
                 inputBean.setSource(source);
@@ -110,10 +115,9 @@ public class Client {
                 int cost = calculateFare(inputBean);
 
                 if(inputBean.getPrevDay().equalsIgnoreCase(TicketConstants.SUNDAY)&&day.equalsIgnoreCase(TicketConstants.MONDAY)){
-                    resetState(prevPath,true,day);
-                    if(cost!=-1)weeklyCap=cost;
+//                    if(cost!=-1)weeklyCap=cost;
                     System.out.println("Weekly Cap:"+weeklyCap+" \nMaximum weekly cap applicable::"+max.weeklyCap);
-                    System.out.println("**********************************************************************");
+                    resetState(prevPath,true,day);
                 }else{
                     System.out.println("Weekly Cap:"+weeklyCap+" \nMaximum weekly cap applicable::"+max.weeklyCap);
                 }
@@ -148,7 +152,7 @@ public class Client {
 //    public static int calculateFare(String day, 
 // String time, String source, 
 // String destination,String prevPath,String inputBean.getPrevDay()){ ///TODO: Create pojo
-    public static int calculateFare(InputBean inputBean){
+    public static int calculateFare(InputBean2 inputBean){
         if(!inputBean.getPrevDay().equalsIgnoreCase(inputBean.getDay()))
             inputBean.setPrevPath(resetState(inputBean.getPrevPath(),false, inputBean.getDay()));
         int fare = 0;
@@ -430,7 +434,7 @@ public class Client {
         prevPath="";
 
         if(isWeekCompleted){
-            weeklyCap=0;
+//            weeklyCap=0;
             max = new PathList();
         }
         else{

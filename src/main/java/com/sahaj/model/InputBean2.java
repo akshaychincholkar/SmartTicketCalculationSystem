@@ -1,13 +1,15 @@
 package com.sahaj.model;
 //TODO: datatype change DATe if not complex
 
-public class InputBean {
+public class InputBean2 {
     private String day;
     private String time;
     private String source;
     private String destination;
     private boolean isNextPresent;
     //TODO: previous day null initialization
+    private String prevPath = "";
+    private String prevDay = "";
 
     public String getDay() {
         return day;
@@ -47,6 +49,22 @@ public class InputBean {
 
     public void setNextPresent(boolean nextPresent) {
         isNextPresent = nextPresent;
+    }
+
+    public String getPrevPath() {
+        return prevPath;
+    }
+
+    public void setPrevPath(String prevPath) {
+        this.prevPath = prevPath;
+    }
+
+    public String getPrevDay() {
+        return prevDay;
+    }
+
+    public void setPrevDay(String prevDay) {
+        this.prevDay = prevDay;
     }
 
 }

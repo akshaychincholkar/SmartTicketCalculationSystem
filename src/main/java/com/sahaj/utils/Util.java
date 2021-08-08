@@ -50,7 +50,6 @@ public class Util {
                 inputBean.setTime(arr[1]);
                 inputBean.setSource(arr[2]);
                 inputBean.setDestination(arr[3]);
-                inputBean.setPrevDay("");
                 inputBeans.add(inputBean);
 
             }
