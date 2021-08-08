@@ -28,11 +28,11 @@ public class Travel implements ITravel{
     }
 
     @Override
-    public InputBean calculateFare(InputBean inputBean) {
+    public int calculateFare(InputBean inputBean) {
         //Resetting the daily cap and required attributes for new day
         if(!prevDay.equalsIgnoreCase(inputBean.getDay()))
             prevPath=resetState(prevPath,false, inputBean.getDay());
-        if(!setMaximumApplicableCapss(prevDay,inputBean))return null;
+        if(!setMaximumApplicableCapss(prevDay,inputBean))return -1;
         if(!isWeekend(inputBean.getDay()))dayType = TicketConstants.WEEKDAY;
         else dayType=TicketConstants.WEEKEND;
         if(!inputBean.getSource().equalsIgnoreCase(TicketConstants.ZONE_1)
@@ -49,10 +49,10 @@ public class Travel implements ITravel{
         if(weeklyCap>max.weeklyCap){
             processWeeklyCap();
         }
-        System.out.println("INFO: FARE:"+ fare);
-        System.out.println("INFO: DAILY_CAP: "+dailyCap);
-        System.out.println("INFO: WEEKLY CAP: "+weeklyCap);
-        return inputBean;
+//        System.out.println("INFO: FARE:"+ fare);
+//        System.out.println("INFO: DAILY_CAP: "+dailyCap);
+//        System.out.println("INFO: WEEKLY CAP: "+weeklyCap);
+        return fare;
     }
 
     private int calculateInterZonalFare(InputBean inputBean) {
@@ -61,10 +61,8 @@ public class Travel implements ITravel{
         if(!isPeakHour(Card.valueOf(zonal_start_time).getTime(),Card.valueOf(zonal_end_time).getTime(), inputBean.getTime())){
             fare=Card.valueOf(dayType+"_"+inputBean.getSource()+"_"+TicketConstants.ZONE_1+"_"+TicketConstants.PEAK).getFare();
         }else{
-            System.out.println("Fare Category: Non Peak weekday");
             fare=Card.valueOf(dayType+"_"+inputBean.getSource()+"_"+TicketConstants.ZONE_1+"_"+TicketConstants.NON_PEAK).getFare();
         }
-        System.out.println("INFO:"+zonal_start_time+" Value:"+ fare);
         return fare;
     }
 
@@ -186,5 +184,12 @@ public class Travel implements ITravel{
             e.printStackTrace();
         }
         return isValid;
+    }
+
+    public void printFare(InputBean inputBean) {
+        System.out.println("Day: "+inputBean.getDay()+"  Time: "+
+                inputBean.getTime()+" Path: "+
+                inputBean.getSource()+"-"+
+                inputBean.getDestination()+" Fare: "+fare);
     }
 }

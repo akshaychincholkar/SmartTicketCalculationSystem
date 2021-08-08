@@ -45,11 +45,7 @@ public class Util {
             while(scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 String[] arr = line.split(",");
-                InputBean inputBean = new InputBean();
-                inputBean.setDay(arr[0]);
-                inputBean.setTime(arr[1]);
-                inputBean.setSource(arr[2]);
-                inputBean.setDestination(arr[3]);
+                InputBean inputBean = new InputBean(arr[0],arr[1],arr[2],arr[3]);
                 inputBeans.add(inputBean);
 
             }

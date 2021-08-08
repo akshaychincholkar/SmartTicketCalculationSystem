@@ -22,7 +22,8 @@ public class App {
                 travel.firsday="";
             }
             travel.calculateFare(element);
-            System.out.println(element.getDay()+"Fare: "+travel.fare);
+            travel.printFare(element);
+//            System.out.println("Day: "+element.getDay()+" Fare: "+travel.fare);
             System.out.println("----------------------------------");
             travel.prevPath=element.getDestination();
             travel.prevDay= element.getDay();

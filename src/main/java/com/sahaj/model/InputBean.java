@@ -9,6 +9,14 @@ public class InputBean {
     private boolean isNextPresent;
     //TODO: previous day null initialization
 
+
+    public InputBean(String day, String time, String source, String destination) {
+        this.day = day;
+        this.time = time;
+        this.source = source;
+        this.destination = destination;
+    }
+
     public String getDay() {
         return day;
     }
