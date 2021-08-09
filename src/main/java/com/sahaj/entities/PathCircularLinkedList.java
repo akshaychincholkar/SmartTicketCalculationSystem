@@ -4,12 +4,12 @@ import com.sahaj.constants.TicketConstants;
 
 import java.util.LinkedList;
 
-public class PathList {
+public class PathCircularLinkedList {
     private String route;
     public int dailyCap;
     public int weeklyCap;
-    private PathList next;
-    private PathList sameZone;
+    private PathCircularLinkedList next;
+    private PathCircularLinkedList sameZone;
     public  LinkedList<String> currentDay = new LinkedList<>();
     {
         currentDay.add(TicketConstants.MONDAY);
@@ -21,12 +21,12 @@ public class PathList {
         currentDay.add(TicketConstants.SUNDAY);
 
     }
-    public PathList(String route,int dailyCap,int String){
+    public PathCircularLinkedList(String route, int dailyCap, int String){
         this.route=route;
         this.dailyCap = dailyCap;
     }
 
-    public PathList() {
+    public PathCircularLinkedList() {
         dailyCap =0;
         weeklyCap=0;
     }
@@ -34,7 +34,7 @@ public class PathList {
     public String getRoute() {
         return route;
     }
-    public PathList getNext() {
+    public PathCircularLinkedList getNext() {
         return next;
     }
 
@@ -54,15 +54,15 @@ public class PathList {
         this.weeklyCap = weeklyCap;
     }
 
-    public PathList getSameZone() {
+    public PathCircularLinkedList getSameZone() {
         return sameZone;
     }
 
-    public void setSameZone(PathList sameZone) {
+    public void setSameZone(PathCircularLinkedList sameZone) {
         this.sameZone = sameZone;
     }
 
-    public void setNext(PathList next) {
+    public void setNext(PathCircularLinkedList next) {
         this.next = next;
     }
 }

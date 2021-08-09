@@ -1,32 +1,34 @@
 package com.sahaj;
 
 import com.sahaj.constants.TicketConstants;
+import com.sahaj.model.AttributeCache;
 import com.sahaj.model.InputBean;
-import com.sahaj.service.Travel;
+import com.sahaj.service.TravelImpl;
 import com.sahaj.utils.Util;
-
 import java.util.List;
 
 public class App {
     public static void main(String[] args) {
         //Step 1: Reading the input file
         List<InputBean> inputBeans = Util.readInputFile();
-        Travel travel = new Travel();
-        //Step 2: Calculating the fare for each day
-        for(InputBean element:inputBeans){
+        TravelImpl travelImpl = new TravelImpl();
 
-            if(!travel.prevDay.equalsIgnoreCase(TicketConstants.MONDAY)&&element.getDay().equalsIgnoreCase(TicketConstants.MONDAY)){
-                travel.weeklyCap=0;
-                travel.resetState(travel.prevPath,true,element.getDay());
-                System.out.println("**********************************************************************");
-                travel.firsday="";
-            }
-            travel.calculateFare(element);
-            travel.printFare(element);
-//            System.out.println("Day: "+element.getDay()+" Fare: "+travel.fare);
-            System.out.println("----------------------------------");
-            travel.prevPath=element.getDestination();
-            travel.prevDay= element.getDay();
+        //Step 2: Calculating the fare for each day
+        AttributeCache cache = travelImpl.getCache();
+        for(InputBean element:inputBeans){
+            if(!cache.getPrevDay().equalsIgnoreCase(TicketConstants.MONDAY)&&element.getDay().equalsIgnoreCase(TicketConstants.MONDAY)){
+                cache.setWeeklyCap(0);
+                travelImpl.resetState(cache.getPrevPath(),true,element.getDay());
+                System.out.println("********START OF NEW WEEK*********");
+                cache.setFirsday("");
+        }
+        travelImpl.calculateFare(element);
+
+        //Step 3: Printing the output
+        travelImpl.printFare(element,cache);
+        System.out.println("----------------------------------");
+        cache.setPrevPath(element.getDestination());
+        cache.setPrevDay( element.getDay());
         }
     }
 }

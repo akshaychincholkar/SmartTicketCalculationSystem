@@ -1,5 +1,4 @@
 package com.sahaj.model;
-//TODO: datatype change DATe if not complex
 
 public class InputBean {
     private String day;
@@ -7,7 +6,6 @@ public class InputBean {
     private String source;
     private String destination;
     private boolean isNextPresent;
-    //TODO: previous day null initialization
 
 
     public InputBean(String day, String time, String source, String destination) {

@@ -24,4 +24,5 @@ public class TicketConstants {
     public final static String WEEKEND = "WEEKEND";
     public final static String OFF_PEAK_HOUR_START_TIME = "_OFF_PEAK_HOUR_START_TIME";
     public final static String OFF_PEAK_HOUR_END_TIME = "_OFF_PEAK_HOUR_END_TIME";
+    public final static String UNDERSCORE = "_";
 }
